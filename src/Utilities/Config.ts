@@ -12,7 +12,7 @@ export class Config {
 	public static Database = {
 		DB_TYPE: process.env.DB_TYPE,
 		DB_NAME: process.env.DB_NAME,
-		DB_LOGGING: !Config.Options.IS_PROD,
+		DB_LOGGING: process.env.DB_LOGGING,
 		DB_SYNC: !Config.Options.IS_PROD
 	}
 }

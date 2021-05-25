@@ -6,9 +6,9 @@ import autoload from "fastify-autoload";
 import { Config } from "../Utilities/Config";
 
 export class Server {
-	private static logSystem = debug("vue-fs:api:system");
-	private static logEvent = debug("vue-fs:api:event");
-	private static logError = debug("vue-fs:api:error");
+	private static logSystem = debug("next-drive:api:system");
+	private static logEvent = debug("next-drive:api:event");
+	private static logError = debug("next-drive:api:error");
 
 	private static port = Config.Options.PORT;
 	private static app: FastifyInstance;
@@ -18,8 +18,12 @@ export class Server {
 
 		Server.app = fastify({ logger: true });
 		Server.app.register(autoload, {
+			dir: path.join(__dirname, "../Plugins")
+		});
+		Server.app.register(autoload, {
 			dir: path.join(__dirname, "../Controllers"),
-			options: { prefix: "/api/" }
+			options: { prefix: "/api/" },
+			routeParams: false
 		});
 
 		Server.app.setErrorHandler(async (error: FastifyError) => {

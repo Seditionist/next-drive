@@ -1,18 +1,16 @@
 import { FastifyInstance, FastifyRequest } from "fastify";
 
 import { Folder } from "../../Repositories/FolderRepository";
+import { FolderSchema } from "../../Types/Schemas/Generic";
 
 interface IRequest {
 	uid: string
 }
 
-const FolderSchema = {
-
-};
-
 export default async (fastify: FastifyInstance): Promise<void> => {
 	fastify.get("/getfolders/:uid?", {
 		schema: {
+			tags: ["Folder"],
 			params: {
 				type: "object",
 				properties: {
@@ -27,10 +25,7 @@ export default async (fastify: FastifyInstance): Promise<void> => {
 						status: { type: "number" },
 						data: {
 							type: "array",
-							items: {
-								type: "array",
-								items: FolderSchema
-							}
+							items: FolderSchema
 						}
 					}
 				}

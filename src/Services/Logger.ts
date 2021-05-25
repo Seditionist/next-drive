@@ -4,10 +4,10 @@ import { DateTime } from "../Utilities/DateTime";
 
 export class Logger {
 
-	private static readonly logSystem = debug("vue-fs:system");
-	private static readonly logEvent = debug("vue-fs:event");
-	private static readonly logError = debug("vue-fs:error");
-	private static readonly logWarn = debug("vue-fs:warn");
+	private static readonly logSystem = debug("next-drive:system");
+	private static readonly logEvent = debug("next-drive:event");
+	private static readonly logError = debug("next-drive:error");
+	private static readonly logWarn = debug("next-drive:warn");
 
 	public static System(log: unknown): void {
 		Logger.logSystem("\x1b[36m%s\x1b[0m", log, `- ${DateTime.Now()}`);

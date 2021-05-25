@@ -1,7 +1,7 @@
 import { cwd } from "process";
 import debug from "debug";
 
-const logError = debug("vue-fs:exit");
+const logError = debug("next-drive:exit");
 
 export class ExitHandler {
 

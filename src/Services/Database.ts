@@ -6,9 +6,9 @@ import path from "path";
 import { Config } from "../Utilities/Config";
 
 export class Database {
-	private static logSystem = debug("vue-fs:db:system");
-	private static logEvent = debug("vue-fs:db:event");
-	private static logError = debug("vue-fs:db:error");
+	private static logSystem = debug("next-drive:db:system");
+	private static logEvent = debug("next-drive:db:event");
+	private static logError = debug("next-drive:db:error");
 
 	private static readonly ormconfig = {
 		type: Config.Database.DB_TYPE,
