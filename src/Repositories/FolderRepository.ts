@@ -6,9 +6,9 @@ export class Folder {
 
 	private static async IsUnique(folder: _Folder): Promise<boolean> {
 		const exists = await _Folder.findOne({
-			ParentFolderID: folder.ParentFolderID,
+			ParentFolderID: folder.ParentFolderID ?? null,
 			FolderName: folder.FolderName,
-			id: Not(folder.id)
+			id: Not(folder.id ?? 0)
 		});
 		return exists ? true : false;
 	}

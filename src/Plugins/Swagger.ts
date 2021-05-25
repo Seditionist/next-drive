@@ -11,14 +11,13 @@ export default plugin(async (fastify: FastifyInstance): Promise<void> => {
 				description: "some api",
 				version: "v1"
 			},
-			host: "127.0.0.1",
 			schemes: ["http"],
 			consumes: ["application/json"],
 			produces: ["application/json"],
-			// tags: [
-			// 	{ name: "Folder", description: "Folder related endpoints" },
-			// 	{ name: "File", description: "File related endpoints" }
-			// ]
+			tags: [
+				{ name: "Folder", description: "Folder related endpoints" },
+				{ name: "File", description: "File related endpoints" }
+			]
 		},
 		exposeRoute: true
 	});

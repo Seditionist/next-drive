@@ -1,7 +1,8 @@
 export const FileSchema = {
 	type: "object",
 	properties: {
-		FolderID: { type: "number" },
+		uid: { type: "string" },
+		FolderUid: { type: "string" },
 		FileName: { type: "string" },
 		FileExtension: { type: "string" },
 		FileContentType: { type: "string" },
@@ -12,7 +13,7 @@ export const FileSchema = {
 export const FolderSchema = {
 	type: "object",
 	properties: {
-		ParentFolderID: { type: "number" },
+		uid: { type: "string" },
 		FolderName: { type: "string" },
 		files: {
 			type: "array",
@@ -23,7 +24,7 @@ export const FolderSchema = {
 			items: {
 				type: "object",
 				properties: {
-					ParentFolderID: { type: "number" },
+					uid: { type: "string" },
 					FolderName: { type: "string" },
 					files: {
 						type: "array",

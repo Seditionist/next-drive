@@ -14,7 +14,7 @@ export class File {
 			FileName: file.FileName,
 			FileExtension: file.FileExtension,
 			FolderID: (folder ?? null),
-			id: Not(file.id)
+			id: Not(file.id ?? 0)
 		});
 		return exists ? true : false;
 	}
