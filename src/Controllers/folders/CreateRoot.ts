@@ -1,7 +1,6 @@
 import { FastifyInstance, FastifyRequest } from "fastify";
 
 import { Folder } from "../../Repositories/FolderRepository";
-// import { FolderSchema } from "../../Types/Schemas/Generic";
 
 interface IRequest {
 	name: string
