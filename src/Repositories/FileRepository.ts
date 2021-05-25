@@ -140,7 +140,7 @@ export class File {
 			const file = await _File.findOne({ uid });
 			if (!file) throw "file not found";
 
-			await file.remove();
+			await _File.delete(file);
 			return true;
 		} catch (error) {
 			throw new Error(error);

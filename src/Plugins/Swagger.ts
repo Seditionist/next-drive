@@ -12,7 +12,7 @@ export default plugin(async (fastify: FastifyInstance): Promise<void> => {
 				version: "v1"
 			},
 			schemes: ["http"],
-			consumes: ["application/json"],
+			consumes: ["application/json", "multipart/form-data"],
 			produces: ["application/json"],
 			tags: [
 				{ name: "Folder", description: "Folder related endpoints" },

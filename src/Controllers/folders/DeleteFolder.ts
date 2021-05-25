@@ -3,19 +3,17 @@ import { FastifyInstance, FastifyRequest } from "fastify";
 import { Folder } from "../../Repositories/FolderRepository";
 
 interface IRequest {
-	name: string,
-	folderUID: string
+	uid: string
 }
 
 export default async (fastify: FastifyInstance): Promise<void> => {
-	fastify.post("/createsub", {
+	fastify.delete("/delete", {
 		schema: {
 			tags: ["Folder"],
 			body: {
 				type: "object",
 				properties: {
-					name: { type: "string" },
-					folderUID: { type: "string" },
+					uid: { type: "string" }
 				}
 			},
 			response: {
@@ -31,12 +29,12 @@ export default async (fastify: FastifyInstance): Promise<void> => {
 		}
 	}, async (req: FastifyRequest) => {
 		try {
-			const { name, folderUID } = req.body as IRequest;
+			const { uid } = req.body as IRequest;
 
 			return {
 				ok: true,
 				status: 200,
-				data: await Folder.InsertSub(folderUID, name)
+				data: await Folder.Delete(uid)
 			};
 		} catch (error) {
 			throw new Error(error);

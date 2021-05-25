@@ -26,6 +26,7 @@ export class Folder {
 				where: { ParentFolderID: (parent?.id ?? null) },
 				relations: [
 					"subFolders",
+					"files"
 				],
 				select: [
 					"FolderName",
@@ -119,8 +120,6 @@ export class Folder {
 		try {
 			const folder = await _Folder.findOne({ uid });
 			if (!folder) throw "folder not found";
-
-			await _Folder.delete(folder);
 
 			await folder.remove();
 			return true;
