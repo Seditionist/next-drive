@@ -1,5 +1,6 @@
 import { FastifyInstance, FastifyRequest } from "fastify";
 
+import { FileSchema } from "../../Types/Schemas/Generic";
 import { File } from "../../Repositories/FileRepository";
 
 interface IRequest {
@@ -7,13 +8,13 @@ interface IRequest {
 }
 
 export default async (fastify: FastifyInstance): Promise<void> => {
-	fastify.get("/getFiles/:uid?", {
+	fastify.get("/getfiles/:uid", {
 		schema: {
 			tags: ["File"],
-			body: {
-				type: "object",
+			params: {
+				type: ["object"],
 				properties: {
-					uid: { type: "string" }
+					uid: { type: "string", require: false }
 				}
 			},
 			response: {
@@ -22,7 +23,10 @@ export default async (fastify: FastifyInstance): Promise<void> => {
 					properties: {
 						ok: { type: "boolean" },
 						status: { type: "number" },
-						data: { type: "boolean" }
+						data: {
+							type: "array",
+							items: FileSchema
+						}
 					}
 				}
 			}
@@ -30,10 +34,17 @@ export default async (fastify: FastifyInstance): Promise<void> => {
 	}, async (req: FastifyRequest) => {
 		try {
 			const { uid } = req.params as IRequest;
+			if (!uid)
+				return {
+					ok: true,
+					status: 200,
+					data: await File.GetRootFiles()
+				};
+
 			return {
 				ok: true,
 				status: 200,
-				data: await File.GetFiles(uid)
+				data: await File.GetFolderFiles(uid)
 			};
 		} catch (error) {
 			throw new Error(error);

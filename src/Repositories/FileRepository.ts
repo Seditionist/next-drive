@@ -19,7 +19,24 @@ export class File {
 		return exists ? true : false;
 	}
 
-	public static async GetFiles(Uid?: string): Promise<_File[]> {
+	public static async GetRootFiles(): Promise<_File[]> {
+		try {
+			const files = await _File.find({
+				where: { FolderId: null },
+				select: [
+					"Uid",
+					"FileName",
+					"FileExtension",
+					"CreatedAt"
+				]
+			});
+			return files;
+		} catch (error) {
+			throw new Error(error);
+		}
+	}
+
+	public static async GetFolderFiles(Uid: string): Promise<_File[]> {
 		try {
 			const folder = await _Folder.findOne({ Uid });
 			if (!folder) throw "folder not found";
@@ -27,6 +44,7 @@ export class File {
 			return await _File.find({
 				where: { FolderId: folder.Id },
 				select: [
+					"Uid",
 					"FileName",
 					"FileExtension",
 					"CreatedAt"
@@ -97,7 +115,7 @@ export class File {
 	public static async Rename(uid: string, name: string): Promise<boolean> {
 		try {
 			const sanitized = sanitize(name);
-			if (name != sanitized) throw "invalId filename";
+			if (name != sanitized) throw "invalid filename";
 
 			const file = await _File.findOne({ Uid: uid });
 			if (!file) throw "file not found";
@@ -138,9 +156,10 @@ export class File {
 	public static async Delete(Uid: string): Promise<boolean> {
 		try {
 			const file = await _File.findOne({ Uid });
+
 			if (!file) throw "file not found";
 
-			await _File.delete(file);
+			await _File.remove(file);
 			return true;
 		} catch (error) {
 			throw new Error(error);

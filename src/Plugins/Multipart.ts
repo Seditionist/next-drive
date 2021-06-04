@@ -12,8 +12,6 @@ export default plugin(async (fastify: FastifyInstance): Promise<void> => {
 			files: 1,
 			headerPairs: 2000
 		},
-		// attachFieldsToBody: true,
-		// sharedSchemaId: "#fileUpload",
-		// addToBody: true
+		addToBody: true
 	});
 });

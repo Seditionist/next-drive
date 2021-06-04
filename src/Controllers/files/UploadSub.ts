@@ -3,8 +3,17 @@ import { FastifyInstance, FastifyRequest } from "fastify";
 
 import { File } from "../../Repositories/FileRepository";
 
+interface BodyEntry {
+	data: Buffer,
+	filename: string,
+	encoding: string,
+	mimetype: string,
+	limit: false
+}
+
 interface IRequest {
-	folder: string
+	uid: string
+	files: BodyEntry[]
 }
 
 export default async (fastify: FastifyInstance): Promise<void> => {
@@ -15,7 +24,8 @@ export default async (fastify: FastifyInstance): Promise<void> => {
 			body: {
 				type: "object",
 				properties: {
-					uid: { type: "string" }
+					uid: { type: "string" },
+					files: { isFileType: true }
 				}
 			},
 			response: {
@@ -31,22 +41,24 @@ export default async (fastify: FastifyInstance): Promise<void> => {
 		}
 	}, async (req: FastifyRequest) => {
 		try {
-			const { folder } = req.params as IRequest;
+			const { uid, files } = req.body as IRequest;
 
-			const data = await req.file();
-			if (!data) throw "no file uploaded";
+			if (!files[0]) throw "blah";
 
-			const extension = path.extname(data.filename);
-			const filename = path.basename(data.filename, extension);
+			const file = files[0];
+			if (!file) throw "no file uploaded";
+
+			const extension = path.extname(file.filename);
+			const filename = path.basename(file.filename, extension);
 
 			return {
 				ok: true,
 				status: 200,
-				data: await File.InsertSub(folder, {
+				data: await File.InsertSub(uid, {
 					filename,
 					extension,
-					contentType: data.mimetype,
-					contents: await data.toBuffer()
+					contentType: file.mimetype,
+					contents: file.data
 				})
 			};
 		} catch (error) {
