@@ -13,23 +13,23 @@ export class File {
 		const exists = await _File.findOne({
 			FileName: file.FileName,
 			FileExtension: file.FileExtension,
-			FolderID: (folder ?? null),
-			id: Not(file.id ?? 0)
+			FolderId: (folder ?? null),
+			Id: Not(file.Id ?? 0)
 		});
 		return exists ? true : false;
 	}
 
-	public static async GetFiles(uid?: string): Promise<_File[]> {
+	public static async GetFiles(Uid?: string): Promise<_File[]> {
 		try {
-			const folder = await _Folder.findOne({ uid });
+			const folder = await _Folder.findOne({ Uid });
 			if (!folder) throw "folder not found";
 
 			return await _File.find({
-				where: { FolderID: folder.id },
+				where: { FolderId: folder.Id },
 				select: [
 					"FileName",
 					"FileExtension",
-					"createdAt"
+					"CreatedAt"
 				]
 			});
 		} catch (error) {
@@ -37,9 +37,9 @@ export class File {
 		}
 	}
 
-	public static async GetFile(uid: string): Promise<_File> {
+	public static async GetFile(Uid: string): Promise<_File> {
 		try {
-			const file = await _File.findOne({ uid });
+			const file = await _File.findOne({ Uid });
 			if (!file) throw "file not found";
 
 			return file;
@@ -51,7 +51,7 @@ export class File {
 	public static async InsertRoot(file: IFile): Promise<boolean> {
 		try {
 			const sanitized = sanitize(file.filename);
-			if (file.filename != sanitized) throw "invalid filename";
+			if (file.filename != sanitized) throw "invalId filename";
 
 			const newFile = new _File();
 			newFile.FileName = file.filename;
@@ -69,22 +69,22 @@ export class File {
 		}
 	}
 
-	public static async InsertSub(folderUID: string, file: IFile): Promise<boolean> {
+	public static async InsertSub(folderUid: string, file: IFile): Promise<boolean> {
 		try {
 			const sanitized = sanitize(file.filename);
-			if (file.filename != sanitized) throw "invalid filename";
+			if (file.filename != sanitized) throw "invalId filename";
 
-			const folder = await _Folder.findOne({ uid: folderUID });
+			const folder = await _Folder.findOne({ Uid: folderUid });
 			if (!folder) throw "folder not found";
 
 			const newFile = new _File();
-			newFile.FolderID = folder.id;
+			newFile.FolderId = folder.Id;
 			newFile.FileName = file.filename;
 			newFile.FileExtension = file.extension;
 			newFile.FileContentType = file.contentType;
 			newFile.FileContents = Generic.BufferToBase64(file.contents);
 
-			const exists = await File.IsUnique(newFile, folder.id);
+			const exists = await File.IsUnique(newFile, folder.Id);
 			if (exists) throw "file already exists";
 
 			await newFile.save();
@@ -97,15 +97,15 @@ export class File {
 	public static async Rename(uid: string, name: string): Promise<boolean> {
 		try {
 			const sanitized = sanitize(name);
-			if (name != sanitized) throw "invalid filename";
+			if (name != sanitized) throw "invalId filename";
 
-			const file = await _File.findOne({ uid });
+			const file = await _File.findOne({ Uid: uid });
 			if (!file) throw "file not found";
 
 			const ext = path.extname(name);
 			file.FileName = path.basename(name, ext);
 
-			const exists = await File.IsUnique(file, file.FolderID);
+			const exists = await File.IsUnique(file, file.FolderId);
 			if (exists) throw "file already exists";
 
 			await file.save();
@@ -115,17 +115,17 @@ export class File {
 		}
 	}
 
-	public static async Move(uid: string, folderUID: string): Promise<boolean> {
+	public static async Move(Uid: string, folderUId: string): Promise<boolean> {
 		try {
-			const file = await _File.findOne({ uid });
+			const file = await _File.findOne({ Uid });
 			if (!file) throw "file not found";
 
-			const folder = await _Folder.findOne({ uid: folderUID });
+			const folder = await _Folder.findOne({ Uid: folderUId });
 			if (!folder) throw "folder not found";
 
-			file.FolderID = folder.id;
+			file.FolderId = folder.Id;
 
-			const exists = await File.IsUnique(file, file.FolderID);
+			const exists = await File.IsUnique(file, file.FolderId);
 			if (exists) throw "file already exists";
 
 			await file.save();
@@ -135,9 +135,9 @@ export class File {
 		}
 	}
 
-	public static async Delete(uid: string): Promise<boolean> {
+	public static async Delete(Uid: string): Promise<boolean> {
 		try {
-			const file = await _File.findOne({ uid });
+			const file = await _File.findOne({ Uid });
 			if (!file) throw "file not found";
 
 			await _File.delete(file);

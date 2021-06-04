@@ -1,20 +1,22 @@
 import { FastifyInstance, FastifyRequest } from "fastify";
 
 import { Folder } from "../../Repositories/FolderRepository";
-import { FolderSchema } from "../../Types/Schemas/Generic";
 
 interface IRequest {
-	uid: string
+	uid: string,
+	name: string
 }
 
 export default async (fastify: FastifyInstance): Promise<void> => {
-	fastify.get("/getfolders/:uid", {
+	fastify.post("/rename", {
 		schema: {
 			tags: ["Folder"],
-			params: {
-				type: ["object"],
+			body: {
+				type: "object",
+				required: ["uid"],
 				properties: {
-					uid: { type: "string", require: false }
+					uid: { type: "string" },
+					name: { type: "string" },
 				}
 			},
 			response: {
@@ -23,29 +25,18 @@ export default async (fastify: FastifyInstance): Promise<void> => {
 					properties: {
 						ok: { type: "boolean" },
 						status: { type: "number" },
-						data: {
-							type: "array",
-							items: FolderSchema
-						}
+						data: { type: "boolean" }
 					}
 				}
 			}
 		}
 	}, async (req: FastifyRequest) => {
 		try {
-			const { uid } = req.params as IRequest;
-
-			if (!uid)
-				return {
-					ok: true,
-					status: 200,
-					data: await Folder.GetRootFolders()
-				};
-
+			const { uid, name } = req.body as IRequest;
 			return {
 				ok: true,
 				status: 200,
-				data: await Folder.GetSubFolders(uid)
+				data: await Folder.Rename(uid, name)
 			};
 		} catch (error) {
 			throw new Error(error);

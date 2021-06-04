@@ -1,26 +1,29 @@
-import { Column, ManyToOne, Index, Entity } from "typeorm";
+import { Column, Entity, Index, ManyToOne, JoinColumn } from "typeorm";
 
 import { Base } from "./Base";
 import { Folder } from "./Folder";
 
 @Entity("Files")
-@Index("IX_Folder_File", ["FolderID", "FileName", "FileExtension"], { unique: true })
+@Index("IX_Folder_File", ["FolderId", "FileName", "FileExtension"], { unique: true })
 export class File extends Base {
 
-	@Index("IX_FolderID")
-	@ManyToOne(() => Folder)
-	@Column({ type: "int", name: "FolderID", nullable: true })
-	FolderID: number | null
+	@Index("IX_FolderId")
+	@Column({ type: "int", nullable: true })
+	FolderId: number | null
 
-	@Column({ type: "nvarchar", name: "FileName", nullable: false, length: "50" })
+	@Column({ type: "nvarchar", nullable: false, length: "50" })
 	FileName: string
 
-	@Column({ type: "nvarchar", name: "FileExtension", nullable: false, length: "50" })
+	@Column({ type: "nvarchar", nullable: false, length: "50" })
 	FileExtension: string
 
-	@Column({ type: "nvarchar", name: "FileContentType", nullable: false, length: "50" })
+	@Column({ type: "nvarchar", nullable: false, length: "50" })
 	FileContentType: string
 
-	@Column({ type: "text", name: "FileContents", nullable: false })
+	@Column({ type: "text", nullable: false })
 	FileContents: string
+
+	@ManyToOne(() => Folder, folder => folder.Files, { onDelete: "CASCADE" })
+	@JoinColumn({ name: "FolderId" })
+	Folder: Folder
 }

@@ -6,38 +6,58 @@ export class Folder {
 
 	private static async IsUnique(folder: _Folder): Promise<boolean> {
 		const exists = await _Folder.findOne({
-			ParentFolderID: folder.ParentFolderID ?? null,
+			ParentFolderId: folder.ParentFolderId ?? null,
 			FolderName: folder.FolderName,
-			id: Not(folder.id ?? 0)
+			Id: Not(folder.Id ?? 0)
 		});
 		return exists ? true : false;
 	}
 
-	public static async GetFolders(uid?: string): Promise<_Folder[]> {
+	public static async GetRootFolders(): Promise<_Folder[]> {
 		try {
-			const parent = await _Folder.findOne({ uid });
-
-			// console.log(t[0]?.subFolders);
-
-			// return t;
-			// console.log(a);
-			console.log(uid);
-			return await _Folder.find({
-				where: { ParentFolderID: (parent?.id ?? null) },
-				relations: [
-					"subFolders",
-					"files"
-				],
-				select: [
-					"FolderName",
-					"uid"
-				]
-			});
+			return await _Folder.find({ ParentFolderId: null });
 		} catch (error) {
 			throw new Error(error);
 		}
 	}
 
+	public static async GetSubFolders(Uid: string): Promise<_Folder[]> {
+		try {
+			const parent = await _Folder.findOne({ Uid });
+
+			if (!parent) throw "Folder not found.";
+
+			return await _Folder.find({ ParentFolderId: parent.Id });
+		} catch (error) {
+			throw new Error(error);
+		}
+	}
+
+	public static async MoveFolder(Uid: string, parentUid?: string): Promise<boolean> {
+		try {
+			const target = await _Folder.findOne({ Uid });
+			if (!target) throw "target folder not found";
+
+			if (parentUid) {
+				const parent = await _Folder.findOne({ Uid: parentUid });
+				if (!parent) throw "parent folder not found";
+
+				console.log(parent);
+				target.ParentFolderId = parent.Id;
+				console.log(target);
+			}
+			else
+				target.ParentFolderId = null;
+
+			const exists = await Folder.IsUnique(target);
+			if (exists) throw "folder already exists";
+
+			await target.save();
+			return true;
+		} catch (error) {
+			throw new Error(error);
+		}
+	}
 
 	public static async InsertRoot(name: string): Promise<boolean> {
 		try {
@@ -55,14 +75,14 @@ export class Folder {
 		}
 	}
 
-	public static async InsertSub(parentUID: string, name: string): Promise<boolean> {
+	public static async InsertSub(parentUid: string, name: string): Promise<boolean> {
 		try {
-			const parent = await _Folder.findOne({ uid: parentUID });
+			const parent = await _Folder.findOne({ Uid: parentUid });
 			if (!parent) throw "parent folder does not exist";
 
 			const newFolder = new _Folder();
 
-			newFolder.ParentFolderID = parent.id;
+			newFolder.ParentFolderId = parent.Id;
 			newFolder.FolderName = name;
 
 			const exists = await Folder.IsUnique(newFolder);
@@ -75,9 +95,9 @@ export class Folder {
 		}
 	}
 
-	public static async Rename(uid: string, name: string): Promise<boolean> {
+	public static async Rename(Uid: string, name: string): Promise<boolean> {
 		try {
-			const folder = await _Folder.findOne({ uid });
+			const folder = await _Folder.findOne({ Uid });
 			if (!folder) throw "folder not found";
 
 			folder.FolderName = name;
@@ -92,33 +112,9 @@ export class Folder {
 		}
 	}
 
-	public static async Move(targetUID: string, parentUID?: string): Promise<boolean> {
+	public static async Delete(Uid: string): Promise<boolean> {
 		try {
-			const target = await _Folder.findOne({ uid: targetUID });
-			if (!target) throw "target folder not found";
-
-			if (parentUID) {
-				const parent = await _Folder.findOne({ uid: parentUID });
-				if (!parent) throw "parent folder not found";
-
-				target.ParentFolderID = parent.id;
-			}
-			else
-				target.ParentFolderID = null;
-
-			const exists = await Folder.IsUnique(target);
-			if (exists) throw "folder already exists";
-
-			await target.save();
-			return true;
-		} catch (error) {
-			throw new Error(error);
-		}
-	}
-
-	public static async Delete(uid: string): Promise<boolean> {
-		try {
-			const folder = await _Folder.findOne({ uid });
+			const folder = await _Folder.findOne({ Uid });
 			if (!folder) throw "folder not found";
 
 			await folder.remove();

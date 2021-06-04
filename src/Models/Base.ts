@@ -7,17 +7,17 @@ export abstract class Base extends BaseEntity {
 
 	@Exclude()
 	@PrimaryGeneratedColumn()
-	id: number;
+	Id: number;
 
 	@Column({ unique: true, nullable: true })
-	uid: string
+	Uid: string
 
 	@CreateDateColumn()
-	createdAt: Date
+	CreatedAt: Date
 
 	@BeforeInsert()
 	seed(): void {
-		this.uid = Generic.CreateUUID();
+		this.Uid = Generic.CreateUUID();
 	}
 
 	toJSON(): Record<string, unknown> {
