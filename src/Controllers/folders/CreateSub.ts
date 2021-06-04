@@ -1,5 +1,6 @@
 import { FastifyInstance, FastifyRequest } from "fastify";
 
+import { SuccessSchema } from "../../Types/Schemas/Generic";
 import { Folder } from "../../Repositories/FolderRepository";
 
 interface IRequest {
@@ -18,16 +19,7 @@ export default async (fastify: FastifyInstance): Promise<void> => {
 					folderUID: { type: "string" },
 				}
 			},
-			response: {
-				200: {
-					type: "object",
-					properties: {
-						ok: { type: "boolean" },
-						status: { type: "number" },
-						data: { type: "boolean" }
-					}
-				}
-			}
+			response: SuccessSchema
 		}
 	}, async (req: FastifyRequest) => {
 		try {

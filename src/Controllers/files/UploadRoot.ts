@@ -1,20 +1,12 @@
 import path from "path";
 import { FastifyInstance, FastifyRequest } from "fastify";
 
+import { SuccessSchema } from "../../Types/Schemas/Generic";
 import { File } from "../../Repositories/FileRepository";
 
-interface BodyEntry {
-	data: Buffer,
-	filename: string,
-	encoding: string,
-	mimetype: string,
-	limit: false
-}
-
 interface IRequest {
-	files: BodyEntry[]
+	files: IBodyEntry[]
 }
-
 
 export default async (fastify: FastifyInstance): Promise<void> => {
 	fastify.post("/uploadroot", {
@@ -27,16 +19,7 @@ export default async (fastify: FastifyInstance): Promise<void> => {
 					files: { isFileType: true }
 				}
 			},
-			response: {
-				200: {
-					type: "object",
-					properties: {
-						ok: { type: "boolean" },
-						status: { type: "number" },
-						data: { type: "boolean" }
-					}
-				}
-			}
+			response: SuccessSchema
 		}
 	}, async (req: FastifyRequest) => {
 		try {

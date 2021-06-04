@@ -2,18 +2,11 @@ import path from "path";
 import { FastifyInstance, FastifyRequest } from "fastify";
 
 import { File } from "../../Repositories/FileRepository";
-
-interface BodyEntry {
-	data: Buffer,
-	filename: string,
-	encoding: string,
-	mimetype: string,
-	limit: false
-}
+import { SuccessSchema } from "../../Types/Schemas/Generic";
 
 interface IRequest {
 	uid: string
-	files: BodyEntry[]
+	files: IBodyEntry[]
 }
 
 export default async (fastify: FastifyInstance): Promise<void> => {
@@ -28,16 +21,7 @@ export default async (fastify: FastifyInstance): Promise<void> => {
 					files: { isFileType: true }
 				}
 			},
-			response: {
-				200: {
-					type: "object",
-					properties: {
-						ok: { type: "boolean" },
-						status: { type: "number" },
-						data: { type: "boolean" }
-					}
-				}
-			}
+			response: SuccessSchema
 		}
 	}, async (req: FastifyRequest) => {
 		try {

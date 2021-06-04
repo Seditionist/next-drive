@@ -19,3 +19,14 @@ export const FolderSchema = {
 		CreatedAt: { type: "string" }
 	}
 };
+
+export const SuccessSchema = {
+	200: {
+		type: "object",
+		properties: {
+			ok: { type: "boolean" },
+			status: { type: "number" },
+			data: { type: "boolean" }
+		}
+	}
+};

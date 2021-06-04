@@ -4,3 +4,11 @@ declare interface IFile {
 	contentType: string
 	contents: Buffer
 }
+
+declare interface IBodyEntry {
+	data: Buffer
+	filename: string
+	encoding: string
+	mimetype: string
+	limit: false
+}

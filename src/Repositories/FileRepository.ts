@@ -4,7 +4,6 @@ import sanitize from "sanitize-filename";
 
 import { Folder as _Folder } from "../Models/Folder";
 import { File as _File } from "../Models/File";
-import { IFile } from "../Types/Abstracts";
 import { Generic } from "../Utilities/Generic";
 
 export class File {

@@ -1,5 +1,6 @@
 import { FastifyInstance, FastifyRequest } from "fastify";
 
+import { SuccessSchema } from "../../Types/Schemas/Generic";
 import { File } from "../../Repositories/FileRepository";
 
 interface IRequest {
@@ -16,16 +17,7 @@ export default async (fastify: FastifyInstance): Promise<void> => {
 					uid: { type: "string" }
 				}
 			},
-			response: {
-				200: {
-					type: "object",
-					properties: {
-						ok: { type: "boolean" },
-						status: { type: "number" },
-						data: { type: "boolean" }
-					}
-				}
-			}
+			response: SuccessSchema
 		}
 	}, async (req: FastifyRequest) => {
 		try {

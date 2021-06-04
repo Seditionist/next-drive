@@ -1,6 +1,7 @@
 import { FastifyInstance, FastifyRequest } from "fastify";
 
 import { Folder } from "../../Repositories/FolderRepository";
+import { SuccessSchema } from "../../Types/Schemas/Generic";
 
 interface IRequest {
 	uid: string,
@@ -22,11 +23,7 @@ export default async (fastify: FastifyInstance): Promise<void> => {
 			response: {
 				200: {
 					type: "object",
-					properties: {
-						ok: { type: "boolean" },
-						status: { type: "number" },
-						data: { type: "boolean" }
-					}
+					properties: SuccessSchema
 				}
 			}
 		}
