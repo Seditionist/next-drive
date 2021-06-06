@@ -27,7 +27,7 @@ export default async (fastify: FastifyInstance): Promise<void> => {
 		try {
 			const { uid, files } = req.body as IRequest;
 
-			if (!files[0]) throw "blah";
+			if (!files[0]) throw "no file uploaded";
 
 			const file = files[0];
 			if (!file) throw "no file uploaded";
