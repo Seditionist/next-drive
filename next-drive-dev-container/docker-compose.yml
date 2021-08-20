@@ -1,0 +1,17 @@
+version: "3.7"
+services:
+  next-drive-dev-container:
+    container_name: next-drive-dev-container
+    image: postgres
+    restart: unless-stopped
+    volumes:
+        - ./data/db:/var/lib/postgresql/data
+    env_file:
+        - database.env
+    ports:
+      - "6666:5432"
+    networks:
+      - next-dev-network
+networks:
+  next-dev-network:
+    driver: bridge

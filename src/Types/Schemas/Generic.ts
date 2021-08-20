@@ -16,7 +16,14 @@ export const FolderSchema = {
 	properties: {
 		Uid: { type: "string" },
 		FolderName: { type: "string" },
-		CreatedAt: { type: "string" }
+		CreatedAt: { type: "string" },
+		Folders: {
+			type: "array", items: {
+				Uid: { type: "string" },
+				FolderName: { type: "string" },
+				CreatedAt: { type: "string" },
+			}
+		}
 	}
 };
 

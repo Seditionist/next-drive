@@ -1,26 +1,15 @@
-import { BaseEntity, BeforeInsert, Column, CreateDateColumn, PrimaryGeneratedColumn } from "typeorm";
-import { classToPlain, Exclude } from "class-transformer";
+import { PrimaryKey, Property } from "@mikro-orm/core";
 
 import { Generic } from "../Utilities/Generic";
 
-export abstract class Base extends BaseEntity {
+export abstract class Base {
 
-	@Exclude()
-	@PrimaryGeneratedColumn()
-	Id: number;
+	@PrimaryKey({ hidden: true })
+	Id!: number;
 
-	@Column({ unique: true, nullable: true })
+	@Property({ onCreate: () => Generic.CreateUUID() })
 	Uid: string
 
-	@CreateDateColumn()
-	CreatedAt: Date
-
-	@BeforeInsert()
-	seed(): void {
-		this.Uid = Generic.CreateUUID();
-	}
-
-	toJSON(): Record<string, unknown> {
-		return classToPlain(this);
-	}
+	@Property()
+	CreatedAt: Date = new Date();
 }

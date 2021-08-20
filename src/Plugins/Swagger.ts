@@ -8,7 +8,7 @@ export default plugin(async (fastify: FastifyInstance): Promise<void> => {
 		swagger: {
 			info: {
 				title: "Next.Js Drive Api",
-				description: "some api",
+				description: "documentation for directory management api",
 				version: "v1"
 			},
 			schemes: ["http"],

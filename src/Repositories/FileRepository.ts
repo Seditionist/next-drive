@@ -1,33 +1,28 @@
 import path from "path";
-import { Not } from "typeorm";
 import sanitize from "sanitize-filename";
 
-import { Folder as _Folder } from "../Models/Folder";
-import { File as _File } from "../Models/File";
+import { Folders } from "../Models/Folders";
+import { Files } from "../Models/Files";
 import { Generic } from "../Utilities/Generic";
-
+import { Database } from "../Services/Database";
 export class File {
 
-	private static async IsUnique(file: _File, folder?: number | null): Promise<boolean> {
-		const exists = await _File.findOne({
-			FileName: file.FileName,
-			FileExtension: file.FileExtension,
-			FolderId: (folder ?? null),
-			Id: Not(file.Id ?? 0)
+	private static async IsUnique(file: Files, folder?: number | null): Promise<boolean> {
+		const exists = await Database.Repo.findOne(Files, {
+			$and: [
+				{ FileName: file.FileName },
+				{ FileExtension: file.FileExtension },
+				{ FolderId: (folder ?? null) },
+				{ "Id !=": file.Id ?? 0 }
+			]
 		});
 		return exists ? true : false;
 	}
 
-	public static async GetRootFiles(): Promise<_File[]> {
+	public static async GetRootFiles(): Promise<Files[]> {
 		try {
-			const files = await _File.find({
-				where: { FolderId: null },
-				select: [
-					"Uid",
-					"FileName",
-					"FileExtension",
-					"CreatedAt"
-				]
+			const files = await Database.Repo.find(Files, {
+				FolderId: null
 			});
 			return files;
 		} catch (error) {
@@ -35,28 +30,22 @@ export class File {
 		}
 	}
 
-	public static async GetFolderFiles(Uid: string): Promise<_File[]> {
+	public static async GetFolderFiles(Uid: string): Promise<Files[]> {
 		try {
-			const folder = await _Folder.findOne({ Uid });
+			const folder = await Database.Repo.findOne(Folders, { Uid });
 			if (!folder) throw "folder not found";
 
-			return await _File.find({
-				where: { FolderId: folder.Id },
-				select: [
-					"Uid",
-					"FileName",
-					"FileExtension",
-					"CreatedAt"
-				]
+			return await Database.Repo.find(Files, {
+				FolderId: folder.Id
 			});
 		} catch (error) {
 			throw new Error(error);
 		}
 	}
 
-	public static async GetFile(Uid: string): Promise<_File> {
+	public static async GetFile(Uid: string): Promise<Files> {
 		try {
-			const file = await _File.findOne({ Uid });
+			const file = await Database.Repo.findOne(Files, { Uid });
 			if (!file) throw "file not found";
 
 			return file;
@@ -70,18 +59,20 @@ export class File {
 			const sanitized = sanitize(file.filename);
 			if (file.filename != sanitized) throw "invalId filename";
 
-			const newFile = new _File();
-			newFile.FileName = file.filename;
-			newFile.FileExtension = file.extension;
-			newFile.FileContentType = file.contentType;
-			newFile.FileContents = Generic.BufferToBase64(file.contents);
+			const newFile = new Files({
+				FileName: file.filename,
+				FileExtension: file.extension,
+				FileContentType: file.contentType,
+				FileContents: Generic.BufferToBase64(file.contents)
+			});
 
 			const exists = await File.IsUnique(newFile);
 			if (exists) throw "file already exists";
 
-			await newFile.save();
+			await Database.Repo.persistAndFlush(newFile);
 			return true;
 		} catch (error) {
+			Database.Repo.clear();
 			throw new Error(error);
 		}
 	}
@@ -91,20 +82,21 @@ export class File {
 			const sanitized = sanitize(file.filename);
 			if (file.filename != sanitized) throw "invalId filename";
 
-			const folder = await _Folder.findOne({ Uid: folderUid });
+			const folder = await Database.Repo.findOne(Folders, { Uid: folderUid });
 			if (!folder) throw "folder not found";
 
-			const newFile = new _File();
-			newFile.FolderId = folder.Id;
-			newFile.FileName = file.filename;
-			newFile.FileExtension = file.extension;
-			newFile.FileContentType = file.contentType;
-			newFile.FileContents = Generic.BufferToBase64(file.contents);
+			const newFile = new Files({
+				FolderId: folder.Id,
+				FileName: file.filename,
+				FileExtension: file.extension,
+				FileContentType: file.contentType,
+				FileContents: Generic.BufferToBase64(file.contents)
+			});
 
 			const exists = await File.IsUnique(newFile, folder.Id);
 			if (exists) throw "file already exists";
 
-			await newFile.save();
+			await Database.Repo.persistAndFlush(newFile);
 			return true;
 		} catch (error) {
 			throw new Error(error);
@@ -116,7 +108,7 @@ export class File {
 			const sanitized = sanitize(name);
 			if (name != sanitized) throw "invalid filename";
 
-			const file = await _File.findOne({ Uid: uid });
+			const file = await Database.Repo.findOne(Files, { Uid: uid });
 			if (!file) throw "file not found";
 
 			const ext = path.extname(name);
@@ -125,7 +117,7 @@ export class File {
 			const exists = await File.IsUnique(file, file.FolderId);
 			if (exists) throw "file already exists";
 
-			await file.save();
+			await Database.Repo.persistAndFlush(file);
 			return true;
 		} catch (error) {
 			throw new Error(error);
@@ -134,10 +126,10 @@ export class File {
 
 	public static async Move(Uid: string, folderUId: string): Promise<boolean> {
 		try {
-			const file = await _File.findOne({ Uid });
+			const file = await Database.Repo.findOne(Files, { Uid });
 			if (!file) throw "file not found";
 
-			const folder = await _Folder.findOne({ Uid: folderUId });
+			const folder = await Database.Repo.findOne(Folders, { Uid: folderUId });
 			if (!folder) throw "folder not found";
 
 			file.FolderId = folder.Id;
@@ -145,7 +137,7 @@ export class File {
 			const exists = await File.IsUnique(file, file.FolderId);
 			if (exists) throw "file already exists";
 
-			await file.save();
+			await Database.Repo.persistAndFlush(file);
 			return true;
 		} catch (error) {
 			throw new Error(error);
@@ -154,11 +146,11 @@ export class File {
 
 	public static async Delete(Uid: string): Promise<boolean> {
 		try {
-			const file = await _File.findOne({ Uid });
+			const file = await Database.Repo.findOne(Files, { Uid });
 
 			if (!file) throw "file not found";
 
-			await _File.remove(file);
+			await Database.Repo.removeAndFlush(file);
 			return true;
 		} catch (error) {
 			throw new Error(error);

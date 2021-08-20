@@ -52,3 +52,7 @@ deeplore-dev-container/data/**/*
 *.crt
 
 drinks.json
+
+__db_cache__
+
+!database.env
