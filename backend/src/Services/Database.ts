@@ -15,7 +15,7 @@ export class Database {
 	public static Repo: EntityManager<IDatabaseDriver<Connection>>
 
 	private static readonly ormconfig = {
-		debug: Config.Options.IS_PROD,
+		debug: false,
 		type: Config.Database.DB_TYPE,
 		port: Config.Database.DB_PORT,
 		user: Config.Database.DB_USER,
@@ -26,7 +26,7 @@ export class Database {
 		cache: {
 			enabled: true,
 			pretty: !Config.Options.IS_PROD,
-			options: { cacheDir: cwd() + "__db_cache__" }
+			options: { cacheDir: cwd() + "/__db_cache__" }
 		}
 	} as ConnectionOptions;
 

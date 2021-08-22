@@ -16,7 +16,7 @@ export class Server {
 	public static async Setup(): Promise<void> {
 		Server.logSystem("Starting server...");
 
-		Server.app = fastify({ logger: true });
+		Server.app = fastify({ logger: false });
 		Server.app.register(autoload, {
 			dir: path.join(__dirname, "../Plugins")
 		});
@@ -27,7 +27,7 @@ export class Server {
 		});
 
 		Server.app.setErrorHandler(async (error: FastifyError) => {
-			Server.logError(error);
+			!Config.Options.IS_PROD && Server.logError(error);
 			return {
 				ok: false,
 				status: 500,

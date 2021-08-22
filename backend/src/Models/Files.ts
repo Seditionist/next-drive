@@ -12,8 +12,8 @@ export class Files extends Base {
 		Object.assign(this, file);
 	}
 
-	@ManyToOne(() => Folders)
-	Folder!: Folders;
+	@ManyToOne(() => Folders, { nullable: true })
+	Folder?: Folders | null;
 
 	@Index({ name: "IX_FolderId" })
 	@Property({ nullable: true, type: "number" })
@@ -28,6 +28,6 @@ export class Files extends Base {
 	@Property()
 	FileContentType: string;
 
-	@Property({ hidden: true })
+	@Property({ hidden: true, type: "text" })
 	FileContents: string;
 }

@@ -1,8 +1,7 @@
-import { FastifyInstance, FastifyRequest, FastifyReply } from "fastify";
+import { FastifyInstance, FastifyRequest } from "fastify";
 
-import { SuccessSchema } from "../../Types/Schemas/Generic";
+// import { FileSchema } from "../../Types/Schemas/Generic";
 import { File } from "../../Repositories/FileRepository";
-import { Generic } from "../../Utilities/Generic";
 
 interface IRequest {
 	uid: string
@@ -19,20 +18,30 @@ export default async (fastify: FastifyInstance): Promise<void> => {
 					uid: { type: "string" }
 				}
 			},
-			response: SuccessSchema
+			// response: {
+			// 	200: {
+			// 		type: "object",
+			// 		properties: {
+			// 			ok: { type: "boolean" },
+			// 			status: { type: "number" },
+			// 			data: FileSchema
+			// 		}
+			// 	}
+			// }
 		}
-	}, async (req: FastifyRequest, res: FastifyReply) => {
+	}, async (req: FastifyRequest) => {
 		try {
 			const { uid } = req.params as IRequest;
 			if (!uid) throw "no uid specified";
 
 			const file = await File.GetFile(uid);
 
-			const buffer = Generic.Base64ToBuffer(file.FileContents);
-
-			res.header("Content-Disposition", `attachment; filename=${file.FileName}${file.FileExtension}`);
-			res.type(file.FileContentType);
-			return res.send(buffer);
+			return {
+				contents: file.FileContents,
+				name: file.FileName,
+				extension: file.FileExtension,
+				type: file.FileContentType
+			};
 		} catch (error) {
 			throw new Error(error);
 		}
