@@ -1,7 +1,7 @@
 import { cwd } from "process";
 import debug from "debug";
 
-const logError = debug("next-drive:exit");
+const logError = debug("next-cloud:exit");
 
 export class ExitHandler {
 

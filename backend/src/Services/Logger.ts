@@ -4,10 +4,10 @@ import { DateTime } from "../Utilities/DateTime";
 
 export class Logger {
 
-	private static readonly logSystem = debug("next-drive:system");
-	private static readonly logEvent = debug("next-drive:event");
-	private static readonly logError = debug("next-drive:error");
-	private static readonly logWarn = debug("next-drive:warn");
+	private static readonly logSystem = debug("next-cloud:system");
+	private static readonly logEvent = debug("next-cloud:event");
+	private static readonly logError = debug("next-cloud:error");
+	private static readonly logWarn = debug("next-cloud:warn");
 
 	public static System(log: unknown): void {
 		Logger.logSystem("\x1b[36m%s\x1b[0m", log, `- ${DateTime.Now()}`);

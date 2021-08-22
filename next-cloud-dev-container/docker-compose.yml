@@ -1,7 +1,7 @@
 version: "3.7"
 services:
-  next-drive-dev-container:
-    container_name: next-drive-dev-container
+  next-cloud-dev-container:
+    container_name: next-cloud-dev-container
     image: postgres
     restart: unless-stopped
     volumes:

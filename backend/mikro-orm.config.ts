@@ -26,7 +26,7 @@ export default {
 	cache: {
 		enabled: true,
 		pretty: !IS_PROD,
-		options: { cacheDir: process.cwd() + "/__db_cache__" }
+		options: { cacheDir: process.cwd() + "\\__db_cache__" }
 	},
 	migrations: {
 		tableName: "mikro_orm_migrations",

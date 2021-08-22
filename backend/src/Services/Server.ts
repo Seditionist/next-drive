@@ -6,9 +6,9 @@ import autoload from "fastify-autoload";
 import { Config } from "../Utilities/Config";
 
 export class Server {
-	private static logSystem = debug("next-drive:api:system");
-	private static logEvent = debug("next-drive:api:event");
-	private static logError = debug("next-drive:api:error");
+	private static logSystem = debug("next-cloud:api:system");
+	private static logEvent = debug("next-cloud:api:event");
+	private static logError = debug("next-cloud:api:error");
 
 	private static port = Config.Options.PORT;
 	private static app: FastifyInstance;

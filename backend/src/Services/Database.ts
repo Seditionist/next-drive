@@ -6,9 +6,9 @@ import path from "path";
 import { Config } from "../Utilities/Config";
 
 export class Database {
-	private static logSystem = debug("next-drive:db:system");
-	private static logEvent = debug("next-drive:db:event");
-	private static logError = debug("next-drive:db:error");
+	private static logSystem = debug("next-cloud:db:system");
+	private static logEvent = debug("next-cloud:db:event");
+	private static logError = debug("next-cloud:db:error");
 
 	private static orm: MikroORM<IDatabaseDriver<Connection>>
 
