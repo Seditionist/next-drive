@@ -24,10 +24,44 @@ export class Folder {
 	public static async GetSubFolders(Uid: string): Promise<Folders[]> {
 		try {
 			const parent = await Database.Repo.findOne(Folders, { Uid });
-
+			
 			if (!parent) throw "Folder not found.";
 
 			return await Database.Repo.find(Folders, { ParentFolderId: parent.Id }, { orderBy: { FolderName: "ASC" } });
+		} catch (error) {
+			throw new Error(error);
+		}
+	}
+
+	public static async GetParentTree(Uid: string): Promise<{
+		Name: string | undefined;
+		Uid: string | undefined;
+	}[]> {
+		try {
+			const parent = await Database.Repo.findOne(Folders, { Uid });
+			
+			if (!parent) throw "Folder not found.";
+
+			await Database.Repo.find(Folders, { });
+
+			const nodes = [];
+			
+			nodes.push({
+				Name: parent.FolderName,
+				Uid: parent.Uid
+			});
+
+			let tree: Folders | null | undefined = parent;
+			while(tree?.ParentFolderId){
+				nodes.push({ 
+					Name: tree.ParentFolder?.FolderName, 
+					Uid: tree.ParentFolder?.Uid
+				});
+				tree = tree.ParentFolder;
+			}
+			// console.log(nodes);
+			Database.Repo.clear();
+			return nodes;
 		} catch (error) {
 			throw new Error(error);
 		}

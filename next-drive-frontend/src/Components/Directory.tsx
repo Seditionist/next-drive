@@ -1,7 +1,7 @@
 import React, { useState } from "react";
-import { Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField, Divider } from "@material-ui/core";
+import { Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField, Divider, Breadcrumbs, Link } from "@material-ui/core";
 
-import { IFile, IFolder } from "@Types/Abstract";
+import { IFile, IFolder, IParent } from "@Types/Abstract";
 import { Folders } from "@Comp/Folders";
 import { Files } from "@Comp/Files";
 import { PublicRequests } from "@Services/Requests";
@@ -10,13 +10,15 @@ import { AppLayout } from "../Layout/AppLayout";
 interface IDirectoryProps {
 	folders: IFolder[],
 	files: IFile[],
-	folderUID?: string
+	folderUID?: string,
+	parents?: IParent[]
 }
 
 export const Directory: React.FC<IDirectoryProps> = ({
 	folders,
 	files,
-	folderUID
+	folderUID,
+	parents = []
 }: IDirectoryProps): JSX.Element => {
 	
 	const [open, setOpen] = useState(false);
@@ -61,6 +63,16 @@ export const Directory: React.FC<IDirectoryProps> = ({
 	return (
 		<AppLayout>
 			<div>
+				<Breadcrumbs maxItems={5}>
+					<Link href={"/"}>
+						Home
+					</Link>
+					{parents.map((p, index) =>
+						<Link key={index} href={`/${p.Uid}`}>
+							{p.Name}
+						</Link>
+					)}
+				</Breadcrumbs>
 				<Button variant="contained" color="primary" onClick={() => setOpen(true)} disabled={folderLoading}>Create Folder</Button>
 				<Folders folders={folders} />
 			</div>

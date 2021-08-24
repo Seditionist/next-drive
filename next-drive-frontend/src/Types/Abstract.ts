@@ -14,3 +14,8 @@ export interface IFile {
     FileContentType: string,
     CreatedAt: Date
 }
+
+export interface IParent {
+    Uid: string,
+    Name: string
+}

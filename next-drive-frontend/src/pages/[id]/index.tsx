@@ -3,18 +3,24 @@ import { ParsedUrlQuery } from "node:querystring";
 
 import React from "react";
 import { Requests } from "@Services/Requests";
-import { IFile, IFolder } from "@Types/Abstract";
+import { IFile, IFolder, IParent } from "@Types/Abstract";
 import { Directory } from "@Comp/Directory";
 
 interface ISubFolderProps {
 	folders: IFolder[],
 	files: IFile[],
-	folderUID?: string
+	folderUID?: string,
+	parents: IParent[]
 }
 
-const SubFolder: React.FC<ISubFolderProps> = ({ folders, files, folderUID }: ISubFolderProps): JSX.Element => {
+const SubFolder: React.FC<ISubFolderProps> = ({ folders, files, folderUID, parents }: ISubFolderProps): JSX.Element => {
 	return (
-		<Directory folderUID={folderUID} folders={folders} files={files} />
+		<Directory
+			folderUID={folderUID}
+			folders={folders}
+			files={files}
+			parents={parents}
+		/>
 	);
 };
 
@@ -33,12 +39,17 @@ export const getServerSideProps: GetServerSideProps = async (context: GetServerS
 		files.push(...response_files.data.data);
 	}
 
-	folders.sort((a, b) => a.length - b.length);
+	const parents = [];
+	const response_parents = await Requests.Get(`folders/getparenttree/${id}`);
+	if(response_parents.ok) {
+		parents.push(...response_parents.data.data);
+	}
 
 	return {
 		props: {
 			folders,
 			files,
+			parents: parents.reverse(),
 			folderUID: id
 		}
 	};
