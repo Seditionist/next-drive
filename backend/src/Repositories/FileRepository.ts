@@ -21,9 +21,7 @@ export class File {
 
 	public static async GetRootFiles(): Promise<Files[]> {
 		try {
-			const files = await Database.Repo.find(Files, {
-				FolderId: null
-			});
+			const files = await Database.Repo.find(Files, { FolderId: null }, { orderBy: { FileName: "ASC", FileExtension: "ASC" } });
 			return files;
 		} catch (error) {
 			throw new Error(error);
@@ -32,7 +30,7 @@ export class File {
 
 	public static async GetFolderFiles(Uid: string): Promise<Files[]> {
 		try {
-			const folder = await Database.Repo.findOne(Folders, { Uid });
+			const folder = await Database.Repo.findOne(Folders, { Uid }, { orderBy: { FileName: "ASC", FileExtension: "ASC" } });
 			if (!folder) throw "folder not found";
 
 			return await Database.Repo.find(Files, {

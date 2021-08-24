@@ -15,7 +15,7 @@ export class Folder {
 
 	public static async GetRootFolders(): Promise<Folders[]> {
 		try {
-			return await Database.Repo.find(Folders, { ParentFolderId: null });
+			return await Database.Repo.find(Folders, { ParentFolderId: null }, { orderBy: { FolderName: "ASC" } });
 		} catch (error) {
 			throw new Error(error);
 		}
@@ -27,7 +27,7 @@ export class Folder {
 
 			if (!parent) throw "Folder not found.";
 
-			return await Database.Repo.find(Folders, { ParentFolderId: parent.Id });
+			return await Database.Repo.find(Folders, { ParentFolderId: parent.Id }, { orderBy: { FolderName: "ASC" } });
 		} catch (error) {
 			throw new Error(error);
 		}
