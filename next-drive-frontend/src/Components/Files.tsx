@@ -1,8 +1,8 @@
 import React from "react";
+import Link from "next/link";
 import { Button } from "@material-ui/core";
 
-import { IFile } from "../Types/Abstract";
-import Link from "next/link";
+import { IFile } from "@Types/Abstract";
 
 interface IFolderProps{
 	files: IFile[]

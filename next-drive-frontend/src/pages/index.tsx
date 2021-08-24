@@ -1,11 +1,9 @@
 import { GetServerSideProps } from "next";
 import React from "react";
 
-import { AppLayout } from "../Layout/AppLayout";
-import { Requests } from "../Services/Requests";
-import { IFolder, IFile } from "../Types/Abstract";
-import { Folders } from "../Components/Folders";
-import { Files } from "../Components/Files";
+import { Requests } from "@Services/Requests";
+import { IFolder, IFile } from "@Types/Abstract";
+import { Directory } from "@Comp/Directory";
 
 interface IHomeProps {
 	folders: IFolder[],
@@ -14,10 +12,7 @@ interface IHomeProps {
 
 const Home: React.FC<IHomeProps> = ({folders, files}: IHomeProps): JSX.Element => {
 	return (
-		<AppLayout>
-			<Folders folders={folders} />
-			<Files files={files} />
-		</AppLayout>
+		<Directory folders={folders} files={files} />
 	);
 };
 

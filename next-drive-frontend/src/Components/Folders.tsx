@@ -2,7 +2,7 @@ import React from "react";
 import Link from "next/link";
 import { Button } from "@material-ui/core";
 
-import { IFolder } from "../Types/Abstract";
+import { IFolder } from "@Types/Abstract";
 
 interface IFolderProps{
 	folders: IFolder[]

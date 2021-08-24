@@ -19,6 +19,15 @@ export class Requests {
 			throw new Error(error);
 		}
 	}
+
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	public static async Post(url: string, data?: unknown, config?: AxiosRequestConfig): Promise<ApiResponse<any>> {
+		try {
+			return await Requests.client.post(url, data, config);
+		} catch (error) {
+			throw new Error(error);
+		}
+	}
 }
 
 export class PublicRequests {
@@ -34,6 +43,15 @@ export class PublicRequests {
 	public static async Get(url: string, config?: AxiosRequestConfig): Promise<ApiResponse<any>> {
 		try {
 			return await PublicRequests.client.get(url, config);
+		} catch (error) {
+			throw new Error(error);
+		}
+	}
+	
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	public static async Post(url: string, data: unknown, config?: AxiosRequestConfig): Promise<ApiResponse<any>> {
+		try {
+			return await PublicRequests.client.post(url, data, config);
 		} catch (error) {
 			throw new Error(error);
 		}

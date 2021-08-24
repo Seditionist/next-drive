@@ -4,25 +4,19 @@ import { ParsedUrlQuery } from "node:querystring";
 import React from "react";
 import { Requests } from "@Services/Requests";
 import { IFile, IFolder } from "@Types/Abstract";
-import { Folders } from "../../Components/Folders";
-import { Files } from "../../Components/Files";
-import { AppLayout } from "src/Layout/AppLayout";
+import { Directory } from "@Comp/Directory";
 
 interface ISubFolderProps {
 	folders: IFolder[],
-	files: IFile[]
+	files: IFile[],
+	folderUID?: string
 }
 
-const SubFolder: React.FC<ISubFolderProps> = ({ folders, files }: ISubFolderProps): JSX.Element => {
+const SubFolder: React.FC<ISubFolderProps> = ({ folders, files, folderUID }: ISubFolderProps): JSX.Element => {
 	return (
-		<AppLayout>
-			<Folders folders={folders} />
-			<Files files={files} />
-		</AppLayout>
+		<Directory folderUID={folderUID} folders={folders} files={files} />
 	);
 };
-
-export default SubFolder;
 
 export const getServerSideProps: GetServerSideProps = async (context: GetServerSidePropsContext) => {
 	const { id } = context.params as ParsedUrlQuery;
@@ -39,10 +33,15 @@ export const getServerSideProps: GetServerSideProps = async (context: GetServerS
 		files.push(...response_files.data.data);
 	}
 
+	folders.sort((a, b) => a.length - b.length);
+
 	return {
 		props: {
 			folders,
-			files
+			files,
+			folderUID: id
 		}
 	};
 };
+
+export default SubFolder;
