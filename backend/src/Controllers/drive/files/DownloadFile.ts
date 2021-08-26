@@ -6,7 +6,7 @@ import { File } from "@Repo/FileRepository";
 export default async (fastify: FastifyInstance): Promise<void> => {
 	fastify.get<IRequestContext>("/download/:uid", {
 		schema: {
-			tags: ["File"],
+			tags: ["Drive/File"],
 			params: {
 				required: ["uid"],
 				type: "object",

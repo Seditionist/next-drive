@@ -15,8 +15,8 @@ export default plugin(async (fastify: FastifyInstance): Promise<void> => {
 			consumes: ["application/json", "multipart/form-data"],
 			produces: ["application/json"],
 			tags: [
-				{ name: "Folder", description: "Folder related endpoints" },
-				{ name: "File", description: "File related endpoints" }
+				{ name: "Drive/Folder", description: "Next Drive - Folder related endpoints" },
+				{ name: "Drive/File", description: "Next Drive - File related endpoints" }
 			]
 		},
 		exposeRoute: true

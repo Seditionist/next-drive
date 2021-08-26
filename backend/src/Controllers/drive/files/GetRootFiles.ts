@@ -6,7 +6,7 @@ import { File } from "@Repo/FileRepository";
 export default async (fastify: FastifyInstance): Promise<void> => {
 	fastify.get("/getfiles/", {
 		schema: {
-			tags: ["File"],
+			tags: ["Drive/File"],
 			response: {
 				200: {
 					type: "object",

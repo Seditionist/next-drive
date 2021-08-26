@@ -6,7 +6,7 @@ import { IRequestContext } from "@/Types/Abstracts";
 export default async (fastify: FastifyInstance): Promise<void> => {
 	fastify.get<IRequestContext>("/getparenttree/:uid", {
 		schema: {
-			tags: ["Folder"],
+			tags: ["Drive/Folder"],
 			params: {
 				type: ["object"],
 				required: ["uid"],

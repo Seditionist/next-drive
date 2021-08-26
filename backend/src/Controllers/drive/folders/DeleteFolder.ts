@@ -7,7 +7,7 @@ import { IRequestContext } from "@/Types/Abstracts";
 export default async (fastify: FastifyInstance): Promise<void> => {
 	fastify.delete<IRequestContext>("/delete", {
 		schema: {
-			tags: ["Folder"],
+			tags: ["Drive/Folder"],
 			body: {
 				type: "object",
 				properties: {

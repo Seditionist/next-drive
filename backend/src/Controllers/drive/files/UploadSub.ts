@@ -8,7 +8,7 @@ import { IRequestContext } from "@/Types/Abstracts";
 export default async (fastify: FastifyInstance): Promise<void> => {
 	fastify.post<IRequestContext>("/uploadsub", {
 		schema: {
-			tags: ["File"],
+			tags: ["Drive/File"],
 			consumes: ["multipart/form-data"],
 			body: {
 				type: "object",

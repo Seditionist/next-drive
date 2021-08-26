@@ -7,7 +7,7 @@ import { FolderSchema } from "@/Types/Schemas/Generic";
 export default async (fastify: FastifyInstance): Promise<void> => {
 	fastify.get<IRequestContext>("/getfolders/:uid", {
 		schema: {
-			tags: ["Folder"],
+			tags: ["Drive/Folder"],
 			params: {
 				type: ["object"],
 				properties: {

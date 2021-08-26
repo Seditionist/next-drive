@@ -7,7 +7,7 @@ import { IRequestContext } from "@/Types/Abstracts";
 export default async (fastify: FastifyInstance): Promise<void> => {
 	fastify.get<IRequestContext>("/getfiles/:uid", {
 		schema: {
-			tags: ["File"],
+			tags: ["Drive/File"],
 			params: {
 				type: ["object"],
 				properties: {

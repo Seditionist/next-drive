@@ -7,7 +7,7 @@ import { IRequestContext } from "@/Types/Abstracts";
 export default async (fastify: FastifyInstance): Promise<void> => {
 	fastify.post<IRequestContext>("/move", {
 		schema: {
-			tags: ["File"],
+			tags: ["Drive/File"],
 			body: {
 				type: "object",
 				properties: {

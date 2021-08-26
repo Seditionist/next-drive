@@ -7,7 +7,7 @@ import { IRequestContext } from "@/Types/Abstracts";
 export default async (fastify: FastifyInstance): Promise<void> => {
 	fastify.post<IRequestContext>("/rename", {
 		schema: {
-			tags: ["File"],
+			tags: ["Drive/File"],
 			body: {
 				type: "object",
 				properties: {
