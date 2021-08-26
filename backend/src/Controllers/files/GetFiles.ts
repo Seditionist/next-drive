@@ -1,14 +1,11 @@
-import { FastifyInstance, FastifyRequest } from "fastify";
+import { FastifyInstance } from "fastify";
 
 import { FileSchema } from "../../Types/Schemas/Generic";
 import { File } from "../../Repositories/FileRepository";
-
-interface IRequest {
-	uid: string
-}
+import { IRequestContext } from "../../Types/Abstracts";
 
 export default async (fastify: FastifyInstance): Promise<void> => {
-	fastify.get("/getfiles/:uid", {
+	fastify.get<IRequestContext>("/getfiles/:uid", {
 		schema: {
 			tags: ["File"],
 			params: {
@@ -34,9 +31,9 @@ export default async (fastify: FastifyInstance): Promise<void> => {
 				}
 			}
 		}
-	}, async (req: FastifyRequest) => {
+	}, async (req) => {
 		try {
-			const { uid } = req.params as IRequest;
+			const { uid } = req.params;
 			return {
 				ok: true,
 				status: 200,

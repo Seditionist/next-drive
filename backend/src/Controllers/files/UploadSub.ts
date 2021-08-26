@@ -1,16 +1,12 @@
 import path from "path";
-import { FastifyInstance, FastifyRequest } from "fastify";
+import { FastifyInstance } from "fastify";
 
 import { File } from "../../Repositories/FileRepository";
 import { SuccessSchema } from "../../Types/Schemas/Generic";
-
-interface IRequest {
-	uid: string
-	files: IBodyEntry[]
-}
+import { IRequestContext } from "../../Types/Abstracts";
 
 export default async (fastify: FastifyInstance): Promise<void> => {
-	fastify.post("/uploadsub", {
+	fastify.post<IRequestContext>("/uploadsub", {
 		schema: {
 			tags: ["File"],
 			consumes: ["multipart/form-data"],
@@ -23,9 +19,9 @@ export default async (fastify: FastifyInstance): Promise<void> => {
 			},
 			response: SuccessSchema
 		}
-	}, async (req: FastifyRequest) => {
+	}, async (req) => {
 		try {
-			const { uid, files } = req.body as IRequest;
+			const { uid, files } = req.body;
 
 			if (!files[0]) throw "no file uploaded";
 

@@ -36,8 +36,7 @@ export class Database {
 
 		try {
 			Database.orm = await MikroORM.init(Database.ormconfig);
-			const { em } = Database.orm;
-			Database.Repo = em;
+			Database.Repo = Database.orm.em.fork();
 			Database.logSystem("successfully connected to database");
 		} catch (e) {
 			Database.logError(`error connecting to database ${e}`);

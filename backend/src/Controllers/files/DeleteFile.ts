@@ -1,14 +1,11 @@
-import { FastifyInstance, FastifyRequest } from "fastify";
+import { FastifyInstance } from "fastify";
 
 import { SuccessSchema } from "../../Types/Schemas/Generic";
 import { File } from "../../Repositories/FileRepository";
-
-interface IRequest {
-	uid: string
-}
+import { IRequestContext } from "../../Types/Abstracts";
 
 export default async (fastify: FastifyInstance): Promise<void> => {
-	fastify.delete("/delete", {
+	fastify.delete<IRequestContext>("/delete", {
 		schema: {
 			tags: ["File"],
 			body: {
@@ -19,9 +16,9 @@ export default async (fastify: FastifyInstance): Promise<void> => {
 			},
 			response: SuccessSchema
 		}
-	}, async (req: FastifyRequest) => {
+	}, async (req) => {
 		try {
-			const { uid } = req.body as IRequest;
+			const { uid } = req.body;
 			return {
 				ok: true,
 				status: 200,

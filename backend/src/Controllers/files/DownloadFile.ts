@@ -1,14 +1,10 @@
-import { FastifyInstance, FastifyRequest } from "fastify";
+import { FastifyInstance } from "fastify";
 
-// import { FileSchema } from "../../Types/Schemas/Generic";
+import { IRequestContext } from "../../Types/Abstracts";
 import { File } from "../../Repositories/FileRepository";
 
-interface IRequest {
-	uid: string
-}
-
 export default async (fastify: FastifyInstance): Promise<void> => {
-	fastify.get("/download/:uid", {
+	fastify.get<IRequestContext>("/download/:uid", {
 		schema: {
 			tags: ["File"],
 			params: {
@@ -17,21 +13,11 @@ export default async (fastify: FastifyInstance): Promise<void> => {
 				properties: {
 					uid: { type: "string" }
 				}
-			},
-			// response: {
-			// 	200: {
-			// 		type: "object",
-			// 		properties: {
-			// 			ok: { type: "boolean" },
-			// 			status: { type: "number" },
-			// 			data: FileSchema
-			// 		}
-			// 	}
-			// }
+			}
 		}
-	}, async (req: FastifyRequest) => {
+	}, async (req) => {
 		try {
-			const { uid } = req.params as IRequest;
+			const { uid } = req.params;
 			if (!uid) throw "no uid specified";
 
 			const file = await File.GetFile(uid);

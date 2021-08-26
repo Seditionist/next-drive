@@ -1,21 +1,37 @@
+import { IParentTree } from "src/Types/Abstracts";
 import { Folders } from "../Models/Folders";
 import { Database } from "../Services/Database";
+
 export class Folder {
 
+	private static Repo = Database.Repo.fork().getRepository(Folders);
+
 	private static async IsUnique(folder: Folders): Promise<boolean> {
-		const exists = await Database.Repo.findOne(Folders, {
-			$and: [
-				{ ParentFolderId: folder.ParentFolderId ?? null },
-				{ FolderName: folder.FolderName },
-				{ "Id !=": folder.Id ?? 0 }
-			]
-		});
-		return exists ? true : false;
+		try {
+			const exists = await Folder.Repo.findOne({
+				$and: [
+					{ ParentFolderId: folder.ParentFolderId ?? null },
+					{ FolderName: folder.FolderName },
+					{ "Id !=": folder.Id ?? 0 }
+				]
+			});
+			return exists ? true : false;
+		} catch (error) {
+			throw new Error(error);
+		}
+	}
+
+	public static async GetFolder(Uid: string): Promise<Folders> {
+		try {
+			return await Folder.Repo.findOne({ Uid }) as Folders;
+		} catch (error) {
+			throw new Error(error);
+		}
 	}
 
 	public static async GetRootFolders(): Promise<Folders[]> {
 		try {
-			return await Database.Repo.find(Folders, { ParentFolderId: null }, { orderBy: { FolderName: "ASC" } });
+			return await Folder.Repo.find({ ParentFolderId: null }, { orderBy: { FolderName: "ASC" } });
 		} catch (error) {
 			throw new Error(error);
 		}
@@ -23,28 +39,25 @@ export class Folder {
 
 	public static async GetSubFolders(Uid: string): Promise<Folders[]> {
 		try {
-			const parent = await Database.Repo.findOne(Folders, { Uid });
+			const parent = await Folder.Repo.findOne({ Uid });
 			
 			if (!parent) throw "Folder not found.";
 
-			return await Database.Repo.find(Folders, { ParentFolderId: parent.Id }, { orderBy: { FolderName: "ASC" } });
+			return await Folder.Repo.find( { ParentFolderId: parent.Id }, { orderBy: { FolderName: "ASC" } });
 		} catch (error) {
 			throw new Error(error);
 		}
 	}
 
-	public static async GetParentTree(Uid: string): Promise<{
-		Name: string | undefined;
-		Uid: string | undefined;
-	}[]> {
+	public static async GetParentTree(Uid: string): Promise<IParentTree[]> {
 		try {
-			const parent = await Database.Repo.findOne(Folders, { Uid });
+			const parent = await Folder.Repo.findOne({ Uid });
 			
 			if (!parent) throw "Folder not found.";
 
-			await Database.Repo.find(Folders, { });
+			await Folder.Repo.find( { });
 
-			const nodes = [];
+			const nodes: IParentTree[] = [];
 			
 			nodes.push({
 				Name: parent.FolderName,
@@ -59,7 +72,6 @@ export class Folder {
 				});
 				tree = tree.ParentFolder;
 			}
-			// console.log(nodes);
 			Database.Repo.clear();
 			return nodes;
 		} catch (error) {
@@ -69,11 +81,11 @@ export class Folder {
 
 	public static async MoveFolder(Uid: string, parentUid?: string): Promise<boolean> {
 		try {
-			const target = await Database.Repo.findOne(Folders, { Uid });
+			const target = await Folder.Repo.findOne({ Uid });
 			if (!target) throw "target folder not found";
 
 			if (parentUid) {
-				const parent = await Database.Repo.findOne(Folders, { Uid: parentUid });
+				const parent = await Folder.Repo.findOne({ Uid: parentUid });
 				if (!parent) throw "parent folder not found";
 
 				console.log(parent);
@@ -86,7 +98,7 @@ export class Folder {
 			const exists = await Folder.IsUnique(target);
 			if (exists) throw "folder already exists";
 
-			await Database.Repo.persistAndFlush(target);
+			await Folder.Repo.persistAndFlush(target);
 			return true;
 		} catch (error) {
 			Database.Repo.clear();
@@ -103,7 +115,7 @@ export class Folder {
 			const exists = await Folder.IsUnique(newFolder);
 			if (exists) throw "folder already exists";
 
-			await Database.Repo.persistAndFlush(newFolder);
+			await Folder.Repo.persistAndFlush(newFolder);
 			return true;
 		} catch (error) {
 			throw new Error(error);
@@ -112,7 +124,7 @@ export class Folder {
 
 	public static async InsertSub(parentUid: string, name: string): Promise<boolean> {
 		try {
-			const parent = await Database.Repo.findOne(Folders, { Uid: parentUid });
+			const parent = await Folder.Repo.findOne({ Uid: parentUid });
 			if (!parent) throw "parent folder does not exist";
 
 			const newFolder = new Folders();
@@ -123,7 +135,7 @@ export class Folder {
 			const exists = await Folder.IsUnique(newFolder);
 			if (exists) throw "folder already exists";
 
-			await Database.Repo.persistAndFlush(newFolder);
+			await Folder.Repo.persistAndFlush(newFolder);
 			return true;
 		} catch (error) {
 			throw new Error(error);
@@ -132,7 +144,7 @@ export class Folder {
 
 	public static async Rename(Uid: string, name: string): Promise<boolean> {
 		try {
-			const folder = await Database.Repo.findOne(Folders, { Uid });
+			const folder = await Folder.Repo.findOne({ Uid });
 			if (!folder) throw "folder not found";
 
 			folder.FolderName = name;
@@ -140,7 +152,7 @@ export class Folder {
 			const exists = await Folder.IsUnique(folder);
 			if (exists) throw "folder already exists";
 
-			await Database.Repo.persistAndFlush(folder);
+			await Folder.Repo.persistAndFlush(folder);
 			return true;
 		} catch (error) {
 			throw new Error(error);
@@ -149,10 +161,10 @@ export class Folder {
 
 	public static async Delete(Uid: string): Promise<boolean> {
 		try {
-			const folder = await Database.Repo.findOne(Folders, { Uid });
+			const folder = await Folder.Repo.findOne({ Uid });
 			if (!folder) throw "folder not found";
 
-			await Database.Repo.removeAndFlush(folder);
+			await Folder.Repo.removeAndFlush(folder);
 			return true;
 		} catch (error) {
 			throw new Error(error);

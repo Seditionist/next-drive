@@ -1,14 +1,10 @@
-import { FastifyInstance, FastifyRequest } from "fastify";
+import { FastifyInstance } from "fastify";
 
 import { Folder } from "../../Repositories/FolderRepository";
-// import { FolderSchema } from "../../Types/Schemas/Generic";
-
-interface IRequest {
-	uid: string
-}
+import { IRequestContext } from "../../Types/Abstracts";
 
 export default async (fastify: FastifyInstance): Promise<void> => {
-	fastify.get("/getparenttree/:uid", {
+	fastify.get<IRequestContext>("/getparenttree/:uid", {
 		schema: {
 			tags: ["Folder"],
 			params: {
@@ -20,24 +16,11 @@ export default async (fastify: FastifyInstance): Promise<void> => {
 						require: true
 					}
 				}
-			},
-			// response: {
-			// 	200: {
-			// 		type: "object",
-			// 		properties: {
-			// 			ok: { type: "boolean" },
-			// 			status: { type: "number" },
-			// 			data: {
-			// 				type: "array",
-			// 				items: FolderSchema
-			// 			}
-			// 		}
-			// 	}
-			// }
+			}
 		}
-	}, async (req: FastifyRequest) => {
+	}, async (req) => {
 		try {
-			const { uid } = req.params as IRequest;
+			const { uid } = req.params;
 
 			return {
 				ok: true,

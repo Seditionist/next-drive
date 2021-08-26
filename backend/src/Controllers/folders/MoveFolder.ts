@@ -1,15 +1,12 @@
-import { FastifyInstance, FastifyRequest } from "fastify";
+import { FastifyInstance } from "fastify";
 
 import { Folder } from "../../Repositories/FolderRepository";
 import { SuccessSchema } from "../../Types/Schemas/Generic";
+import { IRequestContext } from "../../Types/Abstracts";
 
-interface IRequest {
-	uid: string,
-	parent: string
-}
 
 export default async (fastify: FastifyInstance): Promise<void> => {
-	fastify.post("/move", {
+	fastify.post<IRequestContext>("/move", {
 		schema: {
 			tags: ["Folder"],
 			body: {
@@ -27,9 +24,9 @@ export default async (fastify: FastifyInstance): Promise<void> => {
 				}
 			}
 		}
-	}, async (req: FastifyRequest) => {
+	}, async (req) => {
 		try {
-			const { uid, parent } = req.body as IRequest;
+			const { uid, parent } = req.body;
 			return {
 				ok: true,
 				status: 200,

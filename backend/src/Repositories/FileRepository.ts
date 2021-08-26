@@ -1,14 +1,18 @@
 import path from "path";
 import sanitize from "sanitize-filename";
 
-import { Folders } from "../Models/Folders";
 import { Files } from "../Models/Files";
 import { Generic } from "../Utilities/Generic";
 import { Database } from "../Services/Database";
+import { Folder } from "./FolderRepository";
+import { IFile } from "../Types/Abstracts";
+
 export class File {
 
+	private static Repo = Database.Repo.fork().getRepository(Files);
+
 	private static async IsUnique(file: Files, folder?: number | null): Promise<boolean> {
-		const exists = await Database.Repo.findOne(Files, {
+		const exists = await File.Repo.findOne({
 			$and: [
 				{ FileName: file.FileName },
 				{ FileExtension: file.FileExtension },
@@ -21,7 +25,7 @@ export class File {
 
 	public static async GetRootFiles(): Promise<Files[]> {
 		try {
-			const files = await Database.Repo.find(Files, { FolderId: null }, { orderBy: { FileName: "ASC", FileExtension: "ASC" } });
+			const files = await File.Repo.find({ FolderId: null }, { orderBy: { FileName: "ASC", FileExtension: "ASC" } });
 			return files;
 		} catch (error) {
 			throw new Error(error);
@@ -30,12 +34,12 @@ export class File {
 
 	public static async GetFolderFiles(Uid: string): Promise<Files[]> {
 		try {
-			const folder = await Database.Repo.findOne(Folders, { Uid }, { orderBy: { FileName: "ASC", FileExtension: "ASC" } });
+			const folder = await Folder.GetFolder(Uid);
 			if (!folder) throw "folder not found";
 
-			return await Database.Repo.find(Files, {
+			return await File.Repo.find({
 				FolderId: folder.Id
-			});
+			}, { orderBy: { FileName: "ASC", FileExtension: "ASC" } });
 		} catch (error) {
 			throw new Error(error);
 		}
@@ -43,7 +47,7 @@ export class File {
 
 	public static async GetFile(Uid: string): Promise<Files> {
 		try {
-			const file = await Database.Repo.findOne(Files, { Uid });
+			const file = await File.Repo.findOne({ Uid });
 			if (!file) throw "file not found";
 
 			return file;
@@ -67,7 +71,7 @@ export class File {
 			const exists = await File.IsUnique(newFile);
 			if (exists) throw "file already exists";
 
-			await Database.Repo.persistAndFlush(newFile);
+			await File.Repo.persistAndFlush(newFile);
 			return true;
 		} catch (error) {
 			Database.Repo.clear();
@@ -80,7 +84,7 @@ export class File {
 			const sanitized = sanitize(file.filename);
 			if (file.filename != sanitized) throw "invalId filename";
 
-			const folder = await Database.Repo.findOne(Folders, { Uid: folderUid });
+			const folder = await Folder.GetFolder(folderUid);
 			if (!folder) throw "folder not found";
 
 			const newFile = new Files({
@@ -94,7 +98,7 @@ export class File {
 			const exists = await File.IsUnique(newFile, folder.Id);
 			if (exists) throw "file already exists";
 
-			await Database.Repo.persistAndFlush(newFile);
+			await File.Repo.persistAndFlush(newFile);
 			return true;
 		} catch (error) {
 			throw new Error(error);
@@ -106,7 +110,7 @@ export class File {
 			const sanitized = sanitize(name);
 			if (name != sanitized) throw "invalid filename";
 
-			const file = await Database.Repo.findOne(Files, { Uid: uid });
+			const file = await File.Repo.findOne({ Uid: uid });
 			if (!file) throw "file not found";
 
 			const ext = path.extname(name);
@@ -115,7 +119,7 @@ export class File {
 			const exists = await File.IsUnique(file, file.FolderId);
 			if (exists) throw "file already exists";
 
-			await Database.Repo.persistAndFlush(file);
+			await File.Repo.persistAndFlush(file);
 			return true;
 		} catch (error) {
 			throw new Error(error);
@@ -124,10 +128,10 @@ export class File {
 
 	public static async Move(Uid: string, folderUId: string): Promise<boolean> {
 		try {
-			const file = await Database.Repo.findOne(Files, { Uid });
+			const file = await File.Repo.findOne({ Uid });
 			if (!file) throw "file not found";
 
-			const folder = await Database.Repo.findOne(Folders, { Uid: folderUId });
+			const folder = await Folder.GetFolder(folderUId);
 			if (!folder) throw "folder not found";
 
 			file.FolderId = folder.Id;
@@ -135,7 +139,7 @@ export class File {
 			const exists = await File.IsUnique(file, file.FolderId);
 			if (exists) throw "file already exists";
 
-			await Database.Repo.persistAndFlush(file);
+			await File.Repo.persistAndFlush(file);
 			return true;
 		} catch (error) {
 			throw new Error(error);
@@ -144,11 +148,11 @@ export class File {
 
 	public static async Delete(Uid: string): Promise<boolean> {
 		try {
-			const file = await Database.Repo.findOne(Files, { Uid });
+			const file = await File.Repo.findOne({ Uid });
 
 			if (!file) throw "file not found";
 
-			await Database.Repo.removeAndFlush(file);
+			await File.Repo.removeAndFlush(file);
 			return true;
 		} catch (error) {
 			throw new Error(error);

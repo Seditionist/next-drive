@@ -1,15 +1,11 @@
-import { FastifyInstance, FastifyRequest } from "fastify";
+import { FastifyInstance } from "fastify";
 
 import { SuccessSchema } from "../../Types/Schemas/Generic";
 import { File } from "../../Repositories/FileRepository";
-
-interface IRequest {
-	uid: string
-	name: string
-}
+import { IRequestContext } from "../../Types/Abstracts";
 
 export default async (fastify: FastifyInstance): Promise<void> => {
-	fastify.post("/rename", {
+	fastify.post<IRequestContext>("/rename", {
 		schema: {
 			tags: ["File"],
 			body: {
@@ -21,9 +17,9 @@ export default async (fastify: FastifyInstance): Promise<void> => {
 			},
 			response: SuccessSchema
 		}
-	}, async (req: FastifyRequest) => {
+	}, async (req) => {
 		try {
-			const { uid, name } = req.body as IRequest;
+			const { uid, name } = req.body;
 			return {
 				ok: true,
 				status: 200,
