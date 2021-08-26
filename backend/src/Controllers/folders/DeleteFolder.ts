@@ -1,8 +1,8 @@
 import { FastifyInstance } from "fastify";
 
-import { SuccessSchema } from "../../Types/Schemas/Generic";
-import { Folder } from "../../Repositories/FolderRepository";
-import { IRequestContext } from "../../Types/Abstracts";
+import { SuccessSchema } from "@/Types/Schemas/Generic";
+import { Folder } from "@Repo/FolderRepository";
+import { IRequestContext } from "@/Types/Abstracts";
 
 export default async (fastify: FastifyInstance): Promise<void> => {
 	fastify.delete<IRequestContext>("/delete", {

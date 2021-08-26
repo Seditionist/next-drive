@@ -1,7 +1,7 @@
 import { FastifyInstance } from "fastify";
 
-import { IRequestContext } from "../../Types/Abstracts";
-import { File } from "../../Repositories/FileRepository";
+import { IRequestContext } from "@/Types/Abstracts";
+import { File } from "@Repo/FileRepository";
 
 export default async (fastify: FastifyInstance): Promise<void> => {
 	fastify.get<IRequestContext>("/download/:uid", {

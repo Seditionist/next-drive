@@ -1,15 +1,16 @@
+import { EntityRepository } from "@mikro-orm/core";
 import path from "path";
 import sanitize from "sanitize-filename";
 
-import { Files } from "../Models/Files";
-import { Generic } from "../Utilities/Generic";
-import { Database } from "../Services/Database";
+import { Files } from "@/Models/Files";
+import { Generic } from "@/Utilities/Generic";
+import { Database } from "@/Services/Database";
+import { IFile } from "@/Types/Abstracts";
 import { Folder } from "./FolderRepository";
-import { IFile } from "../Types/Abstracts";
 
 export class File {
 
-	private static Repo = Database.Repo.fork().getRepository(Files);
+	private static Repo: EntityRepository<Files> = Database.Repo.fork().getRepository(Files);
 
 	private static async IsUnique(file: Files, folder?: number | null): Promise<boolean> {
 		const exists = await File.Repo.findOne({

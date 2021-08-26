@@ -1,9 +1,9 @@
 import path from "path";
 import { FastifyInstance } from "fastify";
 
-import { File } from "../../Repositories/FileRepository";
-import { SuccessSchema } from "../../Types/Schemas/Generic";
-import { IRequestContext } from "../../Types/Abstracts";
+import { File } from "@Repo/FileRepository";
+import { SuccessSchema } from "@/Types/Schemas/Generic";
+import { IRequestContext } from "@/Types/Abstracts";
 
 export default async (fastify: FastifyInstance): Promise<void> => {
 	fastify.post<IRequestContext>("/uploadsub", {

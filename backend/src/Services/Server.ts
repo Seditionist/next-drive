@@ -3,7 +3,7 @@ import debug from "debug";
 import fastify, { FastifyInstance, FastifyError } from "fastify";
 import autoload from "fastify-autoload";
 
-import { Config } from "../Utilities/Config";
+import { Config } from "@/Utilities/Config";
 
 export class Server {
 	private static logSystem = debug("next-cloud:api:system");
@@ -14,6 +14,7 @@ export class Server {
 	private static app: FastifyInstance;
 
 	public static async Setup(): Promise<void> {
+
 		Server.logSystem("Starting server...");
 
 		Server.app = fastify({ logger: false });

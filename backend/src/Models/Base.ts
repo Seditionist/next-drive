@@ -1,6 +1,6 @@
 import { PrimaryKey, Property } from "@mikro-orm/core";
 
-import { Generic } from "../Utilities/Generic";
+import { Generic } from "@/Utilities/Generic";
 
 export abstract class Base {
 

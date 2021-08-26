@@ -1,10 +1,12 @@
-import { IParentTree } from "src/Types/Abstracts";
-import { Folders } from "../Models/Folders";
-import { Database } from "../Services/Database";
+import { EntityRepository } from "@mikro-orm/core";
+
+import { IParentTree } from "@/Types/Abstracts";
+import { Folders } from "@/Models/Folders";
+import { Database } from "@/Services/Database";
 
 export class Folder {
 
-	private static Repo = Database.Repo.fork().getRepository(Folders);
+	private static Repo: EntityRepository<Folders> = Database.Repo.fork().getRepository(Folders);
 
 	private static async IsUnique(folder: Folders): Promise<boolean> {
 		try {

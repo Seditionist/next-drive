@@ -1,6 +1,6 @@
 import debug from "debug";
 
-import { DateTime } from "../Utilities/DateTime";
+import { DateTime } from "@/Utilities/DateTime";
 
 export class Logger {
 

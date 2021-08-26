@@ -1,8 +1,8 @@
 import { FastifyInstance } from "fastify";
 
-import { Folder } from "../../Repositories/FolderRepository";
-import { IRequestContext } from "../../Types/Abstracts";
-import { FolderSchema } from "../../Types/Schemas/Generic";
+import { Folder } from "@Repo/FolderRepository";
+import { IRequestContext } from "@/Types/Abstracts";
+import { FolderSchema } from "@/Types/Schemas/Generic";
 
 export default async (fastify: FastifyInstance): Promise<void> => {
 	fastify.get<IRequestContext>("/getfolders/:uid", {

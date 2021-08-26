@@ -1,8 +1,8 @@
 import { FastifyInstance } from "fastify";
 
-import { SuccessSchema } from "../../Types/Schemas/Generic";
-import { File } from "../../Repositories/FileRepository";
-import { IRequestContext } from "../../Types/Abstracts";
+import { SuccessSchema } from "@/Types/Schemas/Generic";
+import { File } from "@Repo/FileRepository";
+import { IRequestContext } from "@/Types/Abstracts";
 
 export default async (fastify: FastifyInstance): Promise<void> => {
 	fastify.post<IRequestContext>("/move", {

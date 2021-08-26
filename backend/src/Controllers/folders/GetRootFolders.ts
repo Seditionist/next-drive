@@ -1,7 +1,7 @@
 import { FastifyInstance } from "fastify";
 
-import { Folder } from "../../Repositories/FolderRepository";
-import { FolderSchema } from "../../Types/Schemas/Generic";
+import { Folder } from "@Repo/FolderRepository";
+import { FolderSchema } from "@/Types/Schemas/Generic";
 
 export default async (fastify: FastifyInstance): Promise<void> => {
 	fastify.get("/getfolders/", {

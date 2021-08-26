@@ -1,7 +1,7 @@
 import { FastifyInstance } from "fastify";
 
-import { FileSchema } from "../../Types/Schemas/Generic";
-import { File } from "../../Repositories/FileRepository";
+import { FileSchema } from "@/Types/Schemas/Generic";
+import { File } from "@Repo/FileRepository";
 
 export default async (fastify: FastifyInstance): Promise<void> => {
 	fastify.get("/getfiles/", {

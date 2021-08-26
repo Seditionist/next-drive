@@ -3,7 +3,7 @@ import { ConnectionOptions, IDatabaseDriver, EntityManager, Connection, MikroORM
 import { cwd } from "process";
 import path from "path";
 
-import { Config } from "../Utilities/Config";
+import { Config } from "@/Utilities/Config";
 
 export class Database {
 	private static logSystem = debug("next-cloud:db:system");

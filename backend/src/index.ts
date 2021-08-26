@@ -1,13 +1,15 @@
 import "dotenv/config";
 import "reflect-metadata";
+import "module-alias/register";
 
 import { ExitHandler } from "./Utilities/ExitHandler";
 import { Server } from "./Services/Server";
 import { Database } from "./Services/Database";
 
 (async (): Promise<void> => {
+	
 	ExitHandler.Setup();
-
+	
 	await Database.Connect();
 
 	await Server.Setup();
